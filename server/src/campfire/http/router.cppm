@@ -101,7 +101,7 @@ private:
                 if (seg.empty()) {
                     return std::nullopt;   // "/:param" does not match "/"
                 }
-                if (i == 0) capture = seg;
+                capture = seg;   // first param segment of the pattern wins
             } else if (segments[i].text != seg) {
                 return std::nullopt;
             }

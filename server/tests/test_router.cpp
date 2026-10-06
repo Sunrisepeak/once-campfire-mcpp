@@ -44,6 +44,12 @@ int main() {
     router.add(Method::get, "/:roomId/messages", [](Request& req) {
         return Response::text(Status::ok, std::format("messages of {}", req.roomId));
     });
+    router.add(Method::get, "/rooms/:roomId", [](Request& req) {
+        return Response::text(Status::ok, std::format("room {}", req.roomId));
+    });
+    router.add(Method::get, "/users/me/sidebar", [](Request&) {
+        return Response::text(Status::ok, "sidebar");
+    });
     router.add(Method::post, "/:roomId/messages", [&](Request& req) {
         postSeen = true;
         return Response::redirect(std::format("/{}", req.roomId));
@@ -64,6 +70,13 @@ int main() {
         auto response { dispatch(make_request_(Method::get, "/abcdefgh/messages")) };
         check(response.status == Status::ok, "messages route reached");
         check(response.body == "messages of abcdefgh", "roomId captured on nested route");
+    }
+    {
+        auto response { dispatch(make_request_(Method::get, "/rooms/abcdefgh")) };
+        check(response.status == Status::ok, "prefixed room route reached");
+        check(response.body == "room abcdefgh", "roomId captured from non-first segment");
+        check(dispatch(make_request_(Method::get, "/users/me/sidebar")).body == "sidebar",
+              "multi-literal route reached");
     }
     {
         auto response { dispatch(make_request_(Method::post, "/abcdefgh/messages")) };

@@ -94,6 +94,24 @@ int main() {
         check(has_header_(notModified, "ETag", etag), "304 echoes the etag");
     }
 
+    // -- Rails-shaped aliases used by the official bench suite -------------------
+    {
+        auto aliasRoomFx { make_request_(Method::get, "/rooms/aaaaaaaaaaaaaaaa") };
+        const auto aliasRoom { dispatch(aliasRoomFx.req) };
+        check(aliasRoom.status == Status::ok && aliasRoom.body.size() > 50 * 1024,
+              "/rooms/:roomId serves the room page");
+        auto aliasMsgFx { make_request_(Method::get, "/rooms/aaaaaaaaaaaaaaaa/messages") };
+        check(dispatch(aliasMsgFx.req).status == Status::ok,
+              "/rooms/:roomId/messages serves the messages page");
+        auto aliasSideFx { make_request_(Method::get, "/users/me/sidebar") };
+        check(dispatch(aliasSideFx.req).status == Status::ok,
+              "/users/me/sidebar serves the sidebar");
+        auto aliasSearchFx { make_request_(Method::get, "/searches?q=coffee") };
+        const auto aliasSearch { dispatch(aliasSearchFx.req) };
+        check(aliasSearch.status == Status::ok && aliasSearch.body.size() > 10 * 1024,
+              "/searches serves search results");
+    }
+
     // -- post redirects; invalid ids 404; health answers --------------------------
     {
         auto postFx { make_request_(Method::post, "/aaaaaaaaaaaaaaaa/messages") };

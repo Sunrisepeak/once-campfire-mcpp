@@ -82,6 +82,17 @@ Response health_(Request&) {
 Router build_router() {
     Router router { };
     router.add(Method::get,  "/healthz",             health_);
+    router.add(Method::get,  "/up",                  health_);
+
+    // Rails-shaped routes (the paths the once-campfire bench suite drives);
+    // they alias the short forms so one load generator measures both servers.
+    router.add(Method::get,  "/rooms/:roomId",             room_page_);
+    router.add(Method::get,  "/rooms/:roomId/messages",    messages_page_);
+    router.add(Method::post, "/rooms/:roomId/messages",    post_message_);
+    router.add(Method::get,  "/users/me/sidebar",          sidebar_);
+    router.add(Method::get,  "/searches",                  search_);
+
+    // Short forms.
     router.add(Method::get,  "/:roomId",             room_page_);
     router.add(Method::get,  "/:roomId/messages",    messages_page_);
     router.add(Method::post, "/:roomId/messages",    post_message_);
