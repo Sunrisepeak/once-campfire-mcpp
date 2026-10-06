@@ -1,0 +1,7 @@
+# Virtual workspace: the root builds nothing itself. The server and the load
+# generator are independent packages that share this toolchain choice.
+[workspace]
+members = ["server", "bench"]
+
+[toolchain]
+default = "gcc@16.1.0"

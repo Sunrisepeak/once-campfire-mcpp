@@ -1,0 +1,18 @@
+[package]
+name        = "once-campfire-mcpp"
+version     = "0.1.0"
+standard    = "c++23"
+description = "ONCE Campfire re-implemented in C++23 modules — benchmark-first"
+license     = "MIT"
+authors     = ["Sunrisepeak"]
+repo        = "https://github.com/Sunrisepeak/once-campfire-mcpp"
+
+[build]
+default-profile = "release"
+
+[dependencies]
+chriskohlhoff.asio = "1.38.1"
+
+[targets.campfire]
+kind = "bin"
+main = "src/main.cpp"
