@@ -46,26 +46,27 @@ AMD Ryzen AI MAX+ 395 — from the once-campfire README; the Elixir PR #5
 | Search | 435 | 7,053 | 33,299 | **33,299** |
 | Post a message | 273 | 4,767 | 6,896 | **6,896** |
 
-**M1 status — same-machine A/B against the Rust port** (Intel i9-13900K; both
-servers pinned to the same 4 CPUs, the official once-campfire-rust load
-generator driving both through identical route paths, 16 keep-alive clients,
-8 s per route after warmup):
+**M1 status — methodology calibration, not a performance claim.** The C++
+side serves static fixtures and a stub post handler, so the rows below are a
+transport-floor measurement only; a valid A/B requires the real C++ pipeline
+(database in M2, fragment cache in M3, real writes in M4) and lands with M6.
+Kept here because it proves the harness: both servers pinned to the same
+4 CPUs, the official once-campfire-rust load generator driving identical
+route paths, 16 keep-alive clients, 8 s per route after warmup
+(`bench/run-comparison.sh`):
 
-| Route (req/s) | Rust (same machine, real data) | C++ M1 (same machine, fixtures) | p50/p99 C++ (µs) |
-|---|---|---|---|
-| Room page | 22,320 | **198,927** | 77 / 123 |
-| Messages page | 26,260 | **329,172** | 47 / 76 |
-| Sidebar | 21,640 | **418,704** | 37 / 58 |
-| Search | 21,575 | **424,592** | 36 / 61 |
-| Post a message | 5,428 | **313,715** | 46 / 88 |
+| Route (req/s) | Rust (same machine, real data) | C++ M1 fixtures (floor only) |
+|---|---|---|
+| Room page | 22,320 | 198,927 |
+| Messages page | 26,260 | 329,172 |
+| Sidebar | 21,640 | 418,704 |
+| Search | 21,575 | 424,592 |
+| Post a message | 5,428 | 313,715 |
 
 The Rust column reproduces its published ballpark (36 k on a Ryzen AI MAX+
-395), which validates the method. Two honest caveats: the C++ side serves
-static fixtures of the right shapes (the database lands in M2, so its rows are
-a transport-floor claim, not an end-to-end one), and its post handler is the
-M4 stub (redirect without insert — the Rust side pays a real write). The M6
-gate stays: five routes over the Rust baseline with the real database
-pipeline, on comparable hardware.
+395), which validates the method. The M6 gate is the real one: five routes
+over the Rust numbers with the database-backed C++ pipeline on comparable
+hardware.
 
 ## Repository layout
 
