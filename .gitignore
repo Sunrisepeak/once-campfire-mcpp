@@ -28,3 +28,4 @@ logs/
 # build tooling
 compile_commands.json
 .zcodeignore
+bench/results/

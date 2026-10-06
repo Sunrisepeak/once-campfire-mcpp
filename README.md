@@ -46,22 +46,26 @@ AMD Ryzen AI MAX+ 395 — from the once-campfire README; the Elixir PR #5
 | Search | 435 | 7,053 | 33,299 | **33,299** |
 | Post a message | 273 | 4,767 | 6,896 | **6,896** |
 
-**M1 status — transport floor** (not a like-for-like comparison yet: this
-machine is an Intel i9-13900K, the server serves static fixtures shaped like
-the real routes, and the database is not wired in until M2). Same method:
-16 keep-alive clients, the app restricted to 4 io threads:
+**M1 status — same-machine A/B against the Rust port** (Intel i9-13900K; both
+servers pinned to the same 4 CPUs, the official once-campfire-rust load
+generator driving both through identical route paths, 16 keep-alive clients,
+8 s per route after warmup):
 
-| Route (req/s) | Baseline | M1 floor (i9-13900K) | Response size |
+| Route (req/s) | Rust (same machine, real data) | C++ M1 (same machine, fixtures) | p50/p99 C++ (µs) |
 |---|---|---|---|
-| Room page | 36,260 | **126,723** | 84.9 KB |
-| Messages page | 40,872 | **307,706** | 48.2 KB |
-| Sidebar | 34,672 | **464,938** | 19.4 KB |
-| Search | 33,299 | **507,696** | 11.5 KB |
-| Post a message | 6,896 | **629,171** | 302 redirect |
+| Room page | 22,320 | **198,927** | 77 / 123 |
+| Messages page | 26,260 | **329,172** | 47 / 76 |
+| Sidebar | 21,640 | **418,704** | 37 / 58 |
+| Search | 21,575 | **424,592** | 36 / 61 |
+| Post a message | 5,428 | **313,715** | 46 / 88 |
 
-p50/p99 latency at the floor: 117/296 µs (room), 23/75 µs (post). The M6
-gate stays: five routes over the **baseline** on comparable hardware with the
-real database pipeline, not fixtures.
+The Rust column reproduces its published ballpark (36 k on a Ryzen AI MAX+
+395), which validates the method. Two honest caveats: the C++ side serves
+static fixtures of the right shapes (the database lands in M2, so its rows are
+a transport-floor claim, not an end-to-end one), and its post handler is the
+M4 stub (redirect without insert — the Rust side pays a real write). The M6
+gate stays: five routes over the Rust baseline with the real database
+pipeline, on comparable hardware.
 
 ## Repository layout
 
