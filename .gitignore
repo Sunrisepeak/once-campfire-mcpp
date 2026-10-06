@@ -1,0 +1,26 @@
+# build artifacts
+target/
+build/
+*.gcm
+*.o
+*.a
+*.so
+*.dylib
+*.dll
+*.exe
+
+# mcpp
+.bmibase
+gcm.cache/
+
+# editors / OS
+.vscode/
+.idea/
+.DS_Store
+
+# runtime data
+storage/
+*.sqlite3
+*.sqlite3-wal
+*.sqlite3-shm
+logs/
