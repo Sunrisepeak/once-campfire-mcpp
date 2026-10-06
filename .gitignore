@@ -24,3 +24,7 @@ storage/
 *.sqlite3-wal
 *.sqlite3-shm
 logs/
+
+# build tooling
+compile_commands.json
+.zcodeignore

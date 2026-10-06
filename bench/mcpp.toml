@@ -1,0 +1,18 @@
+[package]
+name        = "campfire-bench"
+version     = "0.1.0"
+standard    = "c++23"
+description = "Keep-alive load generator for the once-campfire-mcpp benchmarks"
+license     = "MIT"
+authors     = ["Sunrisepeak"]
+repo        = "https://github.com/Sunrisepeak/once-campfire-mcpp"
+
+[build]
+default-profile = "release"
+
+[dependencies]
+chriskohlhoff.asio = "1.38.1"
+
+[targets.loadgen]
+kind = "bin"
+main = "src/main.cpp"
